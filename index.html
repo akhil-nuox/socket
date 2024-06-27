@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Client</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #messages {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 300px;
+      overflow-y: scroll;
+      margin-bottom: 10px;
+    }
+    #input {
+      width: calc(100% - 22px);
+      padding: 10px;
+    }
+    #sendBtn{
+        width:80px ;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Chat here</h1>
+  <div id="messages"></div>
+  <div style="display: flex;">
+      <input type="text" id="input" placeholder="Type a message..." />
+      <button id="sendBtn">Send</button>
+  </div>
+
+  <script>
+     fetch('http://localhost:4000')
+      .then(response => response.text())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  </script>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    const socket = io('http://localhost:4000');
+
+    const messagesDiv = document.getElementById('messages');
+    const inputField = document.getElementById('input');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Display incoming messages
+    socket.on('message', (msg) => {
+      const message = document.createElement('div');
+      message.textContent = `Received: ${msg}`;
+      messagesDiv.appendChild(message);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll
+    });
+
+    // Display connection status
+    socket.on('connect', () => {
+      const message = document.createElement('div');
+      message.textContent = 'Connected to the WebSocket server';
+      messagesDiv.appendChild(message);
+    });
+
+    socket.on('disconnect', () => {
+      const message = document.createElement('div');
+      message.textContent = 'Disconnected from the WebSocket server';
+      messagesDiv.appendChild(message);
+    });
+    
+    const sendMessage = (message) => {
+        socket.send(message);
+        const sentMessage = document.createElement('div');
+        sentMessage.textContent = `Sent: ${message}`;
+        messagesDiv.appendChild(sentMessage);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll
+        inputField.value = '';
+    }
+    // Send messages to the server
+    sendBtn.addEventListener('click', () => {
+      const message = inputField.value;
+      if (message) {
+        sendMessage(message);
+      }
+    });
+    
+    inputField.addEventListener('keyup', (event) => {
+      if (event.key === 'Enter') {
+        const message = inputField.value;
+        if (message) {
+          sendMessage(message);
+        }
+      }
+    });
+
+  </script>
+
+</body>
+</html>
