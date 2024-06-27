@@ -24,8 +24,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (msg) => {
-    console.log('message: ' + msg);
-    socket.broadcast.emit('message', msg + "***" + new Date().toTimeString()); // Broadcast the message to all clients
+    // console.log('message: ' + msg);
+    socket.broadcast.emit('message', msg); // Broadcast the message to all clients
   });
 
   socket.on("notification", (msg) => {
@@ -38,11 +38,6 @@ io.on('connection', (socket) => {
 //   }, 1000);
 });
 
-app.get("/notify/:message", (req, res) => {
-  const { message } = req.params;
-  io.emit("notification", message);
-  res.send("some notification sent");
-});
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
