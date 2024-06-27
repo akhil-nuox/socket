@@ -34,14 +34,14 @@
   </div>
 
   <script>
-     fetch('http://localhost:4000')
+     fetch('/')
       .then(response => response.text())
       .then(data => console.log(data))
       .catch(error => console.error(error));
   </script>
   <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
   <script>
-    const socket = io('http://localhost:4000');
+    const socket = io('/');
 
     const messagesDiv = document.getElementById('messages');
     const inputField = document.getElementById('input');
